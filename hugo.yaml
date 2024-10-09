@@ -1,0 +1,39 @@
+baseURL: "https://www.feh2.im/"
+theme: "PaperMod"
+
+defaultContentLanguage: "en"
+defaultContentLanguageInSubdir: true
+defaultTheme: "auto"
+
+languages:
+    en:
+        languageName: "English"
+        title: "FeH2"
+        contentDir: "content/en"
+        publishDir: "public/en"
+        languageCode: "en"
+        params:
+            homeInfoParams:
+                title: "FeH2's Blog"
+                content: "Coding, Math, and Life."
+            socialIcons:
+                - name: "github"
+                  url: "https://www.github.com/imfeh2"
+                - name: "email"
+                  url: "mailto:i@feh2.im"
+
+    zh:
+        languageName: "中文"
+        title: "FeH2"
+        contentDir: "content/zh"
+        publishDir: "public/zh"
+        languageCode: "zh"
+        params:
+            homeInfoParams:
+                title: "FeH2的博客"
+                content: "代码、数学和生活"
+            socialIcons:
+                - name: "github"
+                  url: "https://www.github.com/imfeh2"
+                - name: "email"
+                  url: "mailto:i@feh2.im"
