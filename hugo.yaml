@@ -21,6 +21,13 @@ languages:
                   url: "https://www.github.com/imfeh2"
                 - name: "email"
                   url: "mailto:i@feh2.im"
+        menu:
+            main:
+                -   identifier: imem
+                    name: Imem
+                    url: "https://www.feh2.im/imem/"
+                    weight: 1
+
 
     zh:
         languageName: "中文"
@@ -37,3 +44,9 @@ languages:
                   url: "https://www.github.com/imfeh2"
                 - name: "email"
                   url: "mailto:i@feh2.im"
+        menu:
+            main:
+                -   identifier: imem
+                    name: Imem
+                    url: "https://www.feh2.im/imem/"
+                    weight: 1
