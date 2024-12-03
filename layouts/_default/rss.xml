@@ -3,7 +3,7 @@
     <channel>
         <title>{{ .Site.Title }}</title>
         <link>{{ .Site.BaseURL }}{{ .Site.LanguagePrefix }}</link>
-        <description>feedId:86671170046432256+userId:86669589094170624</description>
+        <description>feedId:86672306168184832+userId:86669589094170624</description>
         <generator>Hugo -- {{ .Site.Hugo.Version }}</generator>
         <language>{{ .Site.Language.Lang }}</language>
         <atom:link href="{{ .Site.BaseURL }}{{ .Site.LanguagePrefix }}/index.xml" rel="self" type="application/rss+xml"/>
