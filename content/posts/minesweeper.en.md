@@ -509,3 +509,5 @@ In practical use, even maps of maximum size (30x24, 668) can be generated in imp
 ![solve](/images/minesweeper/solve.png)
 
 As shown in the image, the modified Minesweeper game ensures that every step has a clear logical deduction path, no longer requiring luck to complete the game, providing a pure gaming experience.
+
+For the complete code, please refer to my GitHub repository: [minesweeper](https://github.com/ImFeH2/minesweeper)

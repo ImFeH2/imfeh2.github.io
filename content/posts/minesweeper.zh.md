@@ -512,3 +512,4 @@ void placeMines(Board *board, int startX, int startY) {
 
 如图所示，经过改造的扫雷游戏能够保证每一步都有明确的逻辑推理路径，不再需要靠运气来完成游戏，提供了一个纯粹的游戏体验。
 
+完整代码请参考我的GitHub仓库：[minesweeper](https://github.com/ImFeH2/minesweeper)
