@@ -123,6 +123,9 @@ Testing the game, we indeed got a completely mine-free board:
 
 ![empty-mines](/images/minesweeper/empty-mines.png)
 
+We can control the mine distribution in the game through static patching.
+![even-mines](/images/minesweeper/even-mines.png)
+
 This initial test confirmed that our patching mechanism is feasible. However, to implement a true no-guess Minesweeper algorithm, we need a larger code space. The existing `placeMines` function space is clearly insufficient to accommodate complex algorithm logic.
 
 # Code Section Patching and Memory Management
@@ -261,6 +264,130 @@ For each known number n cell, its surrounding unknown cells $x_1, x_2, ..., x_k$
 $x_1 + x_2 + ... + x_k = n - m$
 
 where m is the number of known mines around that number, which is the known information we can use.
+
+## Algorithm Prototype Design
+
+Before implementing the final C++ version, we first built the algorithm prototype using Python. Python's high-level data structures and concise syntax allowed us to quickly validate various ideas and easily debug the algorithm.
+![minesweeper-ui](/images/minesweeper/minesweeper-ui.png)
+
+### Python Implementation of Core Solver
+
+```python
+class MineSolver:
+    def __init__(self, mines: List[List[bool]]):
+        self.width = len(mines)
+        self.height = len(mines[0]) if self.width > 0 else 0
+        self.mines = mines
+        self.actions: List[Action] = []
+        self.assignments: Dict[Tuple[int, int], int] = {}
+        
+        # Calculate number of mines around each cell
+        self.hints = [
+            [sum(mines[nx][ny] for nx, ny in self.get_neighbors(x, y))
+             for y in range(self.height)]
+            for x in range(self.width)
+        ]
+
+    def get_neighbors(self, x: int, y: int) -> List[Tuple[int, int]]:
+        """Get all adjacent cells for the specified position"""
+        neighbors = []
+        for dx in [-1, 0, 1]:
+            for dy in [-1, 0, 1]:
+                if dx == 0 and dy == 0:
+                    continue
+                nx, ny = x + dx, y + dy
+                if 0 <= nx < self.width and 0 <= ny < self.height:
+                    neighbors.append((nx, ny))
+        return neighbors
+
+    def get_unknown_neighbors(self, x: int, y: int) -> List[Tuple[int, int]]:
+        """Get undetermined cells around the specified position"""
+        return [(nx, ny) for nx, ny in self.get_neighbors(x, y)
+                if (nx, ny) not in self.assignments]
+
+    def get_clues(self) -> List[Clue]:
+        """Build all constraints for the current state"""
+        clues = []
+        for x in range(self.width):
+            for y in range(self.height):
+                if (x, y) in self.assignments and self.assignments[(x, y)] == 0:
+                    unknowns = self.get_unknown_neighbors(x, y)
+                    if not unknowns:
+                        continue
+                    # Calculate number of mines in undetermined cells
+                    mine_count = self.hints[x][y] - sum(
+                        1 for nx, ny in self.get_neighbors(x, y)
+                        if self.assignments.get((nx, ny)) == 1
+                    )
+                    clues.append(Clue((x, y), unknowns, mine_count))
+        return clues
+```
+
+The Python version helped us clarify several key design issues:
+
+1. Data Structure Selection
+    - Using dictionary to store determined cell states
+    - Using tuples to represent coordinates
+    - Abstracting constraints into a separate `Clue` class
+
+2. Constraint Representation
+    - Each constraint includes: center cell position, list of unknown neighbors, remaining mine count
+    - This representation is both intuitive and conducive to constraint propagation
+
+### Implementation of Constraint Propagation
+
+```python
+def solve(self, start_x: int, start_y: int) -> List[Action]:
+    """Main solver logic"""
+    # Initialize: mark starting point as safe
+    self.assignments[(start_x, start_y)] = 0
+    self.actions.append(Action(start_x, start_y, False))
+
+    # Repeatedly apply constraint propagation until no new information can be deduced
+    while self.propagate_constraints():
+        pass
+
+    return self.actions
+
+def propagate_constraints(self) -> bool:
+    """Specific implementation of constraint propagation"""
+    progress = False
+    constraints = self.get_clues()
+
+    for eq in constraints:
+        unknowns = eq.unknowns
+        mines_left = eq.mines
+
+        if len(unknowns) == mines_left:
+            # All unknown cells are mines
+            for x, y in unknowns:
+                if self.assignments.get((x, y)) != 1:
+                    self.assignments[(x, y)] = 1
+                    self.actions.append(Action(x, y, True))
+                    progress = True
+            continue
+
+        if mines_left == 0:
+            # All unknown cells are safe
+            for x, y in unknowns:
+                if self.assignments.get((x, y)) != 0:
+                    self.assignments[(x, y)] = 0
+                    self.actions.append(Action(x, y, False))
+                    progress = True
+            continue
+```
+
+The Python prototype implementation helped us discover:
+1. The efficiency of the constraint propagation algorithm is mainly affected by the number of constraints
+2. The generation of new information often forms a chain reaction
+3. Some constraints may be reused across multiple rounds of propagation
+
+These findings directly influenced the design decisions for the C++ version:
+1. Using arrays instead of dictionaries to improve access efficiency
+2. Implementing a dedicated memory pool to avoid frequent memory allocation
+3. Adding a constraint caching mechanism to reduce repeated calculations
+
+![minesweeper-ai](/images/minesweeper/minesweeper-ai.png)
 
 ## Constraint Propagation Algorithm
 

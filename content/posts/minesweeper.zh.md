@@ -123,6 +123,9 @@ with open(target_path, 'r+b') as f:
 
 ![empty-mines](/images/minesweeper/empty-mines.png)
 
+可以简单控制雷区的分布
+![even-mines](/images/minesweeper/even-mines.png)
+
 这个初步的测试证实了我们的补丁机制是可行的。不过，要实现真正的无猜扫雷算法，我们需要一个更大的代码空间。原有的`placeMines`函数空间显然不足以容纳复杂的算法逻辑。
 
 # 代码段Patch与内存管理
@@ -261,6 +264,132 @@ $$
 $x_1 + x_2 + ... + x_k = n - m$
 
 其中m是该数字周围已知地雷的数量，也就是我们可以使用的已知信息。
+
+## 算法原型设计
+
+在实现最终的C++版本之前，我们首先使用Python构建算法原型。Python的高级数据结构和简洁的语法让我们能够快速验证各种想法，并且容易进行算法调试。
+![minesweeper-ui](/images/minesweeper/minesweeper-ui.png)
+
+### 核心求解器的Python实现
+
+```python
+class MineSolver:
+    def __init__(self, mines: List[List[bool]]):
+        self.width = len(mines)
+        self.height = len(mines[0]) if self.width > 0 else 0
+        self.mines = mines
+        self.actions: List[Action] = []
+        self.assignments: Dict[Tuple[int, int], int] = {}
+        
+        # 计算每个格子周围的地雷数
+        self.hints = [
+            [sum(mines[nx][ny] for nx, ny in self.get_neighbors(x, y))
+             for y in range(self.height)]
+            for x in range(self.width)
+        ]
+
+    def get_neighbors(self, x: int, y: int) -> List[Tuple[int, int]]:
+        """获取指定位置的所有相邻格子"""
+        neighbors = []
+        for dx in [-1, 0, 1]:
+            for dy in [-1, 0, 1]:
+                if dx == 0 and dy == 0:
+                    continue
+                nx, ny = x + dx, y + dy
+                if 0 <= nx < self.width and 0 <= ny < self.height:
+                    neighbors.append((nx, ny))
+        return neighbors
+
+    def get_unknown_neighbors(self, x: int, y: int) -> List[Tuple[int, int]]:
+        """获取指定位置周围尚未确定的格子"""
+        return [(nx, ny) for nx, ny in self.get_neighbors(x, y)
+                if (nx, ny) not in self.assignments]
+
+    def get_clues(self) -> List[Clue]:
+        """构建当前状态下的所有约束"""
+        clues = []
+        for x in range(self.width):
+            for y in range(self.height):
+                if (x, y) in self.assignments and self.assignments[(x, y)] == 0:
+                    unknowns = self.get_unknown_neighbors(x, y)
+                    if not unknowns:
+                        continue
+                    # 计算未确定格子中的地雷数
+                    mine_count = self.hints[x][y] - sum(
+                        1 for nx, ny in self.get_neighbors(x, y)
+                        if self.assignments.get((nx, ny)) == 1
+                    )
+                    clues.append(Clue((x, y), unknowns, mine_count))
+        return clues
+```
+
+Python版本帮助我们理清了几个关键设计问题：
+
+1. 数据结构选择
+    - 使用字典存储已确定的格子状态
+    - 用元组表示坐标位置
+    - 将约束抽象为单独的`Clue`类
+
+2. 约束表示
+    - 每个约束包含：中心格子位置、未知邻居列表、剩余地雷数
+    - 这种表示方式既直观又便于进行约束传播
+
+### 约束传播的实现
+
+```python
+def solve(self, start_x: int, start_y: int) -> List[Action]:
+    """求解器的主要逻辑"""
+    # 初始化：标记起始点为安全
+    self.assignments[(start_x, start_y)] = 0
+    self.actions.append(Action(start_x, start_y, False))
+
+    # 反复应用约束传播直到无法推导出新信息
+    while self.propagate_constraints():
+        pass
+
+    return self.actions
+
+def propagate_constraints(self) -> bool:
+    """约束传播的具体实现"""
+    progress = False
+    constraints = self.get_clues()
+
+    for eq in constraints:
+        unknowns = eq.unknowns
+        mines_left = eq.mines
+
+        if len(unknowns) == mines_left:
+            # 所有未知格子都是地雷
+            for x, y in unknowns:
+                if self.assignments.get((x, y)) != 1:
+                    self.assignments[(x, y)] = 1
+                    self.actions.append(Action(x, y, True))
+                    progress = True
+            continue
+
+        if mines_left == 0:
+            # 所有未知格子都是安全的
+            for x, y in unknowns:
+                if self.assignments.get((x, y)) != 0:
+                    self.assignments[(x, y)] = 0
+                    self.actions.append(Action(x, y, False))
+                    progress = True
+            continue
+```
+
+Python原型的实现帮助我们发现：
+1. 约束传播算法的效率主要受约束数量的影响
+2. 新信息的产生往往形成链式反应
+3. 部分约束可能在多轮传播中重复使用
+
+这些发现直接影响了C++版本的设计决策：
+1. 使用数组替代字典，提高访问效率
+2. 实现专门的内存池，避免频繁的内存分配
+3. 添加约束缓存机制，减少重复计算
+
+
+![minesweeper-ai](/images/minesweeper/minesweeper-ai.png)
+
 
 ## 约束传播算法
 
