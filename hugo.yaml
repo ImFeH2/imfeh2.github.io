@@ -1,52 +1,110 @@
 baseURL: "https://www.feh2.im/"
-theme: "PaperMod"
+title: FeH2
+paginate: 5
+theme: [PaperMod]
 
-defaultContentLanguage: "en"
-defaultContentLanguageInSubdir: true
-defaultTheme: "auto"
+enableInlineShortcodes: true
+enableRobotsTXT: true
+buildDrafts: false
+buildFuture: false
+buildExpired: false
+enableEmoji: true
+pygmentsUseClasses: true
+
+minify:
+    disableXML: true
+    minifyOutput: true
 
 languages:
     en:
         languageName: "English"
         title: "FeH2"
-        contentDir: "content/en"
-        publishDir: "public/en"
-        languageCode: "en"
+        weight: 1
+        taxonomies:
+            category: categories
+            tag: tags
+            series: series
         params:
             homeInfoParams:
                 title: "FeH2's Blog"
-                content: "Coding, Math, and Life."
+                showArticles: true
             socialIcons:
-                - name: "github"
+                - name: github
                   url: "https://www.github.com/imfeh2"
-                - name: "email"
+                - name: email
                   url: "mailto:i@feh2.im"
         menu:
             main:
-                -   identifier: imem
-                    name: Imem
-                    url: "https://www.feh2.im/imem/"
-                    weight: 1
-
+                - name: Archive
+                  url: archives
+                  weight: 1
+                - name: Search
+                  url: search/
+                  weight: 2
+                - name: Tags
+                  url: tags/
+                  weight: 3
+                - name: Imem
+                  url: "https://www.feh2.im/imem/"
+                  weight: 4
 
     zh:
         languageName: "中文"
         title: "FeH2"
-        contentDir: "content/zh"
-        publishDir: "public/zh"
-        languageCode: "zh"
+        weight: 2
+        taxonomies:
+            category: 分类
+            tag: 标签
+            series: 系列
         params:
             homeInfoParams:
                 title: "FeH2的博客"
-                content: "代码、数学和生活"
+                showArticles: true
             socialIcons:
-                - name: "github"
+                - name: github
                   url: "https://www.github.com/imfeh2"
-                - name: "email"
+                - name: email
                   url: "mailto:i@feh2.im"
         menu:
             main:
-                -   identifier: imem
-                    name: Imem
-                    url: "https://www.feh2.im/imem/"
-                    weight: 1
+                - name: 文章
+                  url: archives/
+                  weight: 1
+                - name: 搜索
+                  url: search/
+                  weight: 2
+                - name: 标签
+                  url: tags/
+                  weight: 3
+                - name: Imem
+                  url: "https://www.feh2.im/imem/"
+                  weight: 4
+
+outputs:
+    home:
+        - HTML
+        - RSS
+        - JSON
+
+params:
+    env: production
+    author: FeH2
+    defaultTheme: auto
+    ShowShareButtons: false
+    ShowReadingTime: true
+    displayFullLangName: true
+    ShowPostNavLinks: false
+    ShowBreadCrumbs: true
+    ShowCodeCopyButtons: true
+    ShowRssButtonInSectionTermList: true
+    ShowAllPagesInArchive: true
+    ShowPageNums: true
+    ShowToc: true
+
+markup:
+    goldmark:
+        renderer:
+            unsafe: true
+    highlight:
+        noClasses: false
+
