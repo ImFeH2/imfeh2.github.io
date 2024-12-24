@@ -3,6 +3,8 @@ title: FeH2
 paginate: 5
 theme: [PaperMod]
 
+defaultContentLanguage: "en"
+defaultContentLanguageInSubdir: true
 enableInlineShortcodes: true
 enableRobotsTXT: true
 buildDrafts: false
@@ -36,7 +38,7 @@ languages:
         menu:
             main:
                 - name: Archive
-                  url: archives
+                  url: archives/
                   weight: 1
                 - name: Search
                   url: search/
