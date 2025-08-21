@@ -1,5 +1,5 @@
 ---
-title: "Static Patch to Optimize Minesweeper's Mine Placement Algorithm"
+title: "Optimize Minesweeper's mine placement algorithm by static patch"
 date: 2024-12-24
 type: "posts"
 math: true
