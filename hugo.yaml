@@ -14,99 +14,98 @@ enableEmoji: true
 pygmentsUseClasses: true
 
 minify:
-    disableXML: true
-    minifyOutput: true
+  disableXML: true
+  minifyOutput: true
 
 languages:
-    en:
-        languageName: "English"
-        title: "FeH2"
-        weight: 1
-        taxonomies:
-            category: categories
-            tag: tags
-            series: series
-        params:
-            homeInfoParams:
-                title: "FeH2's Blog"
-                showArticles: true
-            socialIcons:
-                - name: github
-                  url: "https://www.github.com/imfeh2"
-                - name: email
-                  url: "mailto:i@feh2.im"
-        menu:
-            main:
-                - name: Archive
-                  url: archives/
-                  weight: 1
-                - name: Search
-                  url: search/
-                  weight: 2
-                - name: Tags
-                  url: tags/
-                  weight: 3
-                - name: Imem
-                  url: "https://www.feh2.im/imem/"
-                  weight: 4
+  en:
+    languageName: "English"
+    title: "FeH2"
+    weight: 1
+    taxonomies:
+      category: categories
+      tag: tags
+      series: series
+    params:
+      homeInfoParams:
+        title: "FeH2's Blog"
+        showArticles: true
+      socialIcons:
+        - name: github
+          url: "https://www.github.com/imfeh2"
+        - name: email
+          url: "mailto:i@feh2.im"
+    menu:
+      main:
+        - name: Archive
+          url: archives/
+          weight: 1
+        - name: Search
+          url: search/
+          weight: 2
+        - name: Tags
+          url: tags/
+          weight: 3
+        - name: Numem
+          url: "https://www.feh2.im/numem/"
+          weight: 4
 
-    zh:
-        languageName: "中文"
-        title: "FeH2"
-        weight: 2
-        taxonomies:
-            category: 分类
-            tag: 标签
-            series: 系列
-        params:
-            homeInfoParams:
-                title: "FeH2的博客"
-                showArticles: true
-            socialIcons:
-                - name: github
-                  url: "https://www.github.com/imfeh2"
-                - name: email
-                  url: "mailto:i@feh2.im"
-        menu:
-            main:
-                - name: 文章
-                  url: archives/
-                  weight: 1
-                - name: 搜索
-                  url: search/
-                  weight: 2
-                - name: 标签
-                  url: tags/
-                  weight: 3
-                - name: Imem
-                  url: "https://www.feh2.im/imem/"
-                  weight: 4
+  zh:
+    languageName: "中文"
+    title: "FeH2"
+    weight: 2
+    taxonomies:
+      category: 分类
+      tag: 标签
+      series: 系列
+    params:
+      homeInfoParams:
+        title: "FeH2的博客"
+        showArticles: true
+      socialIcons:
+        - name: github
+          url: "https://www.github.com/imfeh2"
+        - name: email
+          url: "mailto:i@feh2.im"
+    menu:
+      main:
+        - name: 文章
+          url: archives/
+          weight: 1
+        - name: 搜索
+          url: search/
+          weight: 2
+        - name: 标签
+          url: tags/
+          weight: 3
+        - name: Numem
+          url: "https://www.feh2.im/numem/"
+          weight: 4
 
 outputs:
-    home:
-        - HTML
-        - RSS
-        - JSON
+  home:
+    - HTML
+    - RSS
+    - JSON
 
 params:
-    env: production
-    author: FeH2
-    defaultTheme: auto
-    ShowShareButtons: false
-    ShowReadingTime: true
-    displayFullLangName: true
-    ShowPostNavLinks: false
-    ShowBreadCrumbs: true
-    ShowCodeCopyButtons: true
-    ShowRssButtonInSectionTermList: true
-    ShowAllPagesInArchive: true
-    ShowPageNums: true
-    ShowToc: true
+  env: production
+  author: FeH2
+  defaultTheme: auto
+  ShowShareButtons: false
+  ShowReadingTime: true
+  displayFullLangName: true
+  ShowPostNavLinks: false
+  ShowBreadCrumbs: true
+  ShowCodeCopyButtons: true
+  ShowRssButtonInSectionTermList: true
+  ShowAllPagesInArchive: true
+  ShowPageNums: true
+  ShowToc: true
 
 markup:
-    goldmark:
-        renderer:
-            unsafe: true
-    highlight:
-        noClasses: false
-
+  goldmark:
+    renderer:
+      unsafe: true
+  highlight:
+    noClasses: false
